@@ -25,11 +25,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.DBHandler;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.InMemoryDemoExpenseManager;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.PersistantExpenseManager;
 
 public class MainActivity extends AppCompatActivity {
+    DBHandler dbHandler;
+
     private ExpenseManager expenseManager;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -51,11 +54,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbHandler= new DBHandler(this);
+
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),dbHandler);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -65,18 +72,20 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         /***  Begin generating dummy data for In-Memory implementation  ***/
-        expenseManager = new InMemoryDemoExpenseManager();
+        expenseManager = new PersistantExpenseManager(dbHandler);
         /*** END ***/
     }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
+        DBHandler dbHandler;
+        public SectionsPagerAdapter(FragmentManager fm,DBHandler dbHandler) {
             super(fm);
+            this.dbHandler=dbHandler;
         }
 
         @Override
@@ -85,13 +94,13 @@ public class MainActivity extends AppCompatActivity {
             // Return the respective fragment.
             switch (position) {
                 case 0:
-                    return ManageExpensesFragment.newInstance(expenseManager);
+                    return ManageExpensesFragment.newInstance(expenseManager,dbHandler);
                 case 1:
-                    return AddAccountFragment.newInstance(expenseManager);
+                    return AddAccountFragment.newInstance(expenseManager,dbHandler);
                 case 2:
                     return ExpenseLogsFragment.newInstance(expenseManager);
                 default:
-                    return ManageExpensesFragment.newInstance(expenseManager);
+                    return ManageExpensesFragment.newInstance(expenseManager,dbHandler);
             }
         }
 

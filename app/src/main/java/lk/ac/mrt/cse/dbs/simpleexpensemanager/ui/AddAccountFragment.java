@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.DBHandler;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
 
@@ -38,14 +39,19 @@ public class AddAccountFragment extends Fragment implements View.OnClickListener
     private EditText accountHolderName;
     private EditText initialBalance;
     private Button addAccount;
+    static DBHandler dbHandler;
 
-    public static AddAccountFragment newInstance(ExpenseManager expenseManager) {
+    public static AddAccountFragment newInstance(ExpenseManager expenseManager,DBHandler dbHandler) {
         AddAccountFragment addAccountFragment = new AddAccountFragment();
         Bundle args = new Bundle();
         args.putSerializable(EXPENSE_MANAGER, expenseManager);
         addAccountFragment.setArguments(args);
+
+        AddAccountFragment.dbHandler=dbHandler;
         return addAccountFragment;
+
     }
+
 
     public AddAccountFragment() {
     }
@@ -95,8 +101,9 @@ public class AddAccountFragment extends Fragment implements View.OnClickListener
                 }
 
                 if (currentExpenseManager != null) {
-                    currentExpenseManager.addAccount(accountNumStr, bankNameStr, accountHolderStr,
-                            Double.parseDouble(initialBalanceStr));
+                  currentExpenseManager.addAccount(accountNumStr, bankNameStr, accountHolderStr,
+                            Double.parseDouble(initialBalanceStr),dbHandler);
+//                    AddAccountFragment.dbHandler.addNewAccount(accountNumStr, bankNameStr, accountHolderStr, Double.parseDouble(initialBalanceStr));
                 }
                 cleanUp();
                 break;

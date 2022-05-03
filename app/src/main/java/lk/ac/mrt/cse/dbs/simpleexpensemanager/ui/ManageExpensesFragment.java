@@ -31,6 +31,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.DBHandler;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.exception.InvalidAccountException;
@@ -47,13 +48,16 @@ public class ManageExpensesFragment extends Fragment implements View.OnClickList
     private RadioGroup expenseTypeGroup;
     private DatePicker datePicker;
     private ExpenseManager currentExpenseManager;
+    static DBHandler dbHandler;
 
-    public static ManageExpensesFragment newInstance(ExpenseManager expenseManager) {
+    public static ManageExpensesFragment newInstance(ExpenseManager expenseManager,DBHandler dbHandler) {
         ManageExpensesFragment manageExpensesFragment = new ManageExpensesFragment();
         Bundle args = new Bundle();
         args.putSerializable(EXPENSE_MANAGER, expenseManager);
         manageExpensesFragment.setArguments(args);
+        ManageExpensesFragment.dbHandler=dbHandler;
         return manageExpensesFragment;
+
     }
 
     public ManageExpensesFragment() {
